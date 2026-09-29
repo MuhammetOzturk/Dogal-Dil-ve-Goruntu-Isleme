@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1280, height=720" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0; width: 1280px; height: 720px; overflow: hidden;
+        background: #0b0f14; font-family: ui-sans-serif, system-ui, sans-serif;
+        color: #e6edf3;
+      }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; }
+      .clip { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+      .glow {
+        position: absolute; width: 620px; height: 620px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(45,212,191,0.08) 0%, rgba(45,212,191,0) 70%);
+        top: -180px; right: -160px;
+      }
+      .glow2 {
+        position: absolute; width: 500px; height: 500px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(251,191,36,0.06) 0%, rgba(251,191,36,0) 70%);
+        bottom: -160px; left: -140px;
+      }
+
+      #title-card .kicker {
+        font-size: 22px; letter-spacing: 0.28em;
+        text-transform: uppercase; color: #2dd4bf; font-weight: 600;
+      }
+      #title-card h1 {
+        margin-top: 18px; font-size: 64px; font-weight: 700; letter-spacing: -0.02em;
+        text-align: center; line-height: 1.15;
+      }
+      #title-card .sub { margin-top: 22px; font-size: 27px; color: #8b949e; }
+
+      .lane { display: flex; align-items: center; gap: 22px; }
+      .lane-label { min-width: 300px; font-size: 26px; font-weight: 700; color: #e6edf3; text-align: right; line-height: 1.25; }
+      .lane-label .tag { display: block; font-size: 17px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 6px; }
+      .lane-label .desc { display: block; font-size: 19px; font-weight: 500; color: #8b949e; }
+      .lane-classic .tag { color: #fbbf24; }
+      .lane-dl .tag { color: #2dd4bf; }
+
+      .node {
+        min-width: 150px; padding: 20px 22px; border-radius: 16px;
+        background: #151b23; border: 1px solid #2a3441; text-align: center;
+        font-size: 24px; font-weight: 600;
+      }
+      .node .step { font-size: 14px; color: #8b949e; font-weight: 500; margin-bottom: 8px; letter-spacing: 0.08em; }
+      .node-hero { border-color: #fbbf24; background: #1d1a10; color: #fbbf24; }
+      .node-hero-dl { border-color: #2dd4bf; background: #10201d; color: #2dd4bf; }
+
+      .arrow { width: 0; height: 0; border-top: 11px solid transparent; border-bottom: 11px solid transparent; border-left: 16px solid #4b5563; }
+
+      .stage { display: flex; flex-direction: column; gap: 66px; }
+
+      .verdict {
+        margin-top: 12px; max-width: 1100px; font-size: 27px; font-weight: 700; text-align: center; color: #e6edf3;
+      }
+      .verdict .hl { color: #2dd4bf; }
+      .verdict .amber { color: #fbbf24; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1280" data-height="720" data-duration="26">
+      <div class="glow" data-layout-ignore></div>
+      <div class="glow2" data-layout-ignore></div>
+
+      <section id="title-card" class="clip" data-start="0" data-duration="5.5" data-track-index="0">
+        <div class="kicker">Ders 1 · Temeller</div>
+        <h1>Makine Öğrenmesi vs Derin Öğrenme</h1>
+        <div class="sub">Fark nerede? — Bir bakışta</div>
+      </section>
+
+      <section id="pipeline-card" class="clip" data-start="5.5" data-duration="15.5" data-track-index="1">
+        <div class="stage">
+          <div class="lane lane-classic" id="row-classic">
+            <div class="lane-label"><span class="tag">Klasik ML</span><span class="desc">Özniteliği insan tasarlar</span></div>
+            <div class="node" data-node="c1"><div class="step">1 · GİRDİ</div>Ham Veri</div>
+            <div class="arrow" data-arrow="c"></div>
+            <div class="node node-hero" data-node="c2"><div class="step">2 · ÖZNİTELİK</div>Elle Çıkarma ✍</div>
+            <div class="arrow" data-arrow="c"></div>
+            <div class="node" data-node="c3"><div class="step">3 · MODEL</div>Sınıflandırıcı</div>
+            <div class="arrow" data-arrow="c"></div>
+            <div class="node" data-node="c4"><div class="step">4 · ÇIKTI</div>Sonuç</div>
+          </div>
+          <div class="lane lane-dl" id="row-dl">
+            <div class="lane-label"><span class="tag">Derin Öğrenme</span><span class="desc">Özniteliği ağ kendisi öğrenir</span></div>
+            <div class="node" data-node="d1"><div class="step">1 · GİRDİ</div>Ham Veri</div>
+            <div class="arrow" data-arrow="d"></div>
+            <div class="node node-hero-dl" data-node="d2"><div class="step">2 · DERİN AĞ</div>Öznitelik + Karar<div>iç içe katmanlar</div></div>
+            <div class="arrow" data-arrow="d"></div>
+            <div class="node" data-node="d3"><div class="step">3 · ÇIKTI</div>Sonuç</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="verdict-card" class="clip" data-start="21" data-duration="5" data-track-index="2">
+        <div class="verdict" id="verdict-line">
+          Klasik ML: özniteliği <span class="amber">insan</span> tasarlar · Derin öğrenme: özniteliği <span class="hl">ağ kendi öğrenir</span>
+        </div>
+      </section>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from("#title-card .kicker", { opacity: 0, y: -14, duration: 0.5, ease: "power2.out" }, 0.2);
+      tl.from("#title-card h1", { opacity: 0, y: 26, duration: 0.7, ease: "power3.out" }, 0.5);
+      tl.from("#title-card .sub", { opacity: 0, y: 16, duration: 0.5, ease: "power2.out" }, 1.2);
+
+      tl.from("#pipeline-card .stage", { opacity: 0, duration: 0.4 }, 5.7);
+      tl.from("#row-classic .lane-label", { opacity: 0, x: -30, duration: 0.5, ease: "power2.out" }, 5.9);
+      tl.from("#row-classic [data-node]", { opacity: 0, y: 22, duration: 0.45, stagger: 0.22, ease: "power2.out" }, 6.2);
+      tl.from("#row-classic [data-arrow]", { opacity: 0, scaleX: 0.2, duration: 0.3, stagger: 0.22, ease: "power1.in" }, 6.5);
+      tl.from("#row-dl .lane-label", { opacity: 0, x: -30, duration: 0.5, ease: "power2.out" }, 10.9);
+      tl.from("#row-dl [data-node]", { opacity: 0, y: 22, duration: 0.45, stagger: 0.26, ease: "power2.out" }, 11.2);
+      tl.from("#row-dl [data-arrow]", { opacity: 0, scaleX: 0.2, duration: 0.3, stagger: 0.26, ease: "power1.in" }, 11.6);
+
+      tl.to("#row-classic", { opacity: 0.32, duration: 0.6, ease: "power1.inOut" }, 17.2);
+      tl.fromTo("#row-dl", { scale: 1 }, { scale: 1.06, duration: 0.35, yoyo: true, repeat: 1, ease: "power2.inOut" }, 17.2);
+
+      tl.from("#verdict-line", { opacity: 0, y: 24, duration: 0.6, ease: "power3.out" }, 21.3);
+      tl.fromTo("#verdict-line", { scale: 1 }, { scale: 1.035, duration: 0.8, yoyo: true, repeat: 2, ease: "sine.inOut" }, 22.6);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

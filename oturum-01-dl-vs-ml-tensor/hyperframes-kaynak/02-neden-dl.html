@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1280, height=720" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0; width: 1280px; height: 720px; overflow: hidden;
+        background: #0b0f14; font-family: ui-sans-serif, system-ui, sans-serif;
+        color: #e6edf3;
+      }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; }
+      .clip { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+      .glow {
+        position: absolute; width: 640px; height: 640px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(45,212,191,0.08) 0%, rgba(45,212,191,0) 70%);
+        top: -200px; left: -180px;
+      }
+      .glow2 {
+        position: absolute; width: 520px; height: 520px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(251,191,36,0.05) 0%, rgba(251,191,36,0) 70%);
+        bottom: -180px; right: -160px;
+      }
+
+      #title-card .kicker { font-size: 22px; letter-spacing: 0.28em; text-transform: uppercase; color: #2dd4bf; font-weight: 600; }
+      #title-card h1 { margin-top: 18px; font-size: 64px; font-weight: 700; letter-spacing: -0.02em; }
+      #title-card .sub { margin-top: 22px; font-size: 27px; color: #8b949e; }
+
+      .content { display: flex; align-items: center; gap: 36px; }
+      .chart-panel {
+        background: #151b23; border: 1px solid #2a3441; border-radius: 20px;
+        padding: 24px 24px 18px 24px;
+      }
+      .reasons { display: flex; flex-direction: column; gap: 22px; width: 400px; }
+      .reason {
+        background: #151b23; border: 1px solid #2a3441; border-left: 5px solid #2dd4bf;
+        border-radius: 14px; padding: 18px 22px; display: flex; align-items: center; gap: 18px;
+      }
+      .reason .num {
+        flex: 0 0 44px; width: 44px; height: 44px; border-radius: 50%;
+        background: #10201d; border: 1px solid #2dd4bf; color: #2dd4bf;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 22px; font-weight: 700;
+      }
+      .reason .rtitle { font-size: 23px; font-weight: 700; }
+      .reason .rbody { font-size: 18px; color: #a3adba; margin-top: 4px; }
+
+      .axis-label { font-size: 20px; fill: #8b949e; font-weight: 600; }
+      .curve-classic { stroke: #9aa4b2; stroke-width: 5; fill: none; }
+      .curve-dl { stroke: #2dd4bf; stroke-width: 7; fill: none; stroke-linecap: round; }
+      .clabel { font-size: 23px; font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1280" data-height="720" data-duration="21">
+      <div class="glow" data-layout-ignore></div>
+      <div class="glow2" data-layout-ignore></div>
+
+      <section id="title-card" class="clip" data-start="0" data-duration="3.8" data-track-index="0">
+        <div class="kicker">Ders 1 · Temeller</div>
+        <h1>Neden Derin Öğrenme?</h1>
+        <div class="sub">Üç itici güç</div>
+      </section>
+
+      <section id="chart-card" class="clip" data-start="3.8" data-duration="17.2" data-track-index="1">
+        <div class="content">
+          <div class="chart-panel">
+            <svg id="chart" width="660" height="440" viewBox="0 0 660 440">
+              <line x1="70" y1="390" x2="640" y2="390" stroke="#2a3441" stroke-width="3" id="axis-x"></line>
+              <line x1="70" y1="390" x2="70" y2="20" stroke="#2a3441" stroke-width="3" id="axis-y"></line>
+              <text class="axis-label" x="360" y="425" text-anchor="middle">Veri miktarı →</text>
+              <text class="axis-label" x="30" y="205" text-anchor="middle" writing-mode="tb" glyph-orientation-vertical="0">Performans →</text>
+              <path id="curve-classic" class="curve-classic" pathLength="1"
+                d="M 70 390 C 200 300, 330 250, 430 244 C 500 240, 560 246, 630 244"></path>
+              <path id="curve-dl" class="curve-dl" pathLength="1"
+                d="M 70 390 C 230 340, 380 200, 630 70"></path>
+              <text id="label-classic" class="clabel" fill="#9aa4b2" x="470" y="210" text-anchor="middle">Klasik ML</text>
+              <text id="label-dl" class="clabel" fill="#2dd4bf" x="430" y="88" text-anchor="middle">Derin Öğrenme</text>
+            </svg>
+          </div>
+          <div class="reasons">
+            <div class="reason" id="r1">
+              <div class="num">1</div>
+              <div><div class="rtitle">Büyük Veri</div><div class="rbody">İnternet çağında milyonlarca örnek; klasik yöntemler doyar</div></div>
+            </div>
+            <div class="reason" id="r2">
+              <div class="num">2</div>
+              <div><div class="rtitle">GPU Donanımı</div><div class="rbody">Katman katman matris işlemleri paralel çalışır</div></div>
+            </div>
+            <div class="reason" id="r3">
+              <div class="num">3</div>
+              <div><div class="rtitle">Otomatik Öznitelik</div><div class="rbody">Elle özellik mühendisliği yerine öğrenilen temsil</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from("#title-card .kicker", { opacity: 0, y: -14, duration: 0.5, ease: "power2.out" }, 0.2);
+      tl.from("#title-card h1", { opacity: 0, y: 26, duration: 0.7, ease: "power3.out" }, 0.5);
+      tl.from("#title-card .sub", { opacity: 0, y: 16, duration: 0.5, ease: "power2.out" }, 1.2);
+
+      tl.from("#chart-card .content", { opacity: 0, duration: 0.45 }, 4.0);
+      tl.from("#axis-x", { attr: { x2: 70 }, duration: 0.9, ease: "power2.inOut" }, 4.3);
+      tl.from("#axis-y", { attr: { y2: 390 }, duration: 0.9, ease: "power2.inOut" }, 4.3);
+      tl.from("#chart .axis-label", { opacity: 0, duration: 0.5 }, 5.0);
+
+      tl.set("#curve-classic", { strokeDasharray: 1, strokeDashoffset: 1, opacity: 1 }, 0);
+      tl.set("#curve-dl", { strokeDasharray: 1, strokeDashoffset: 1, opacity: 1, transformOrigin: "center" }, 0);
+      tl.set("#label-dl", { scale: 1, transformOrigin: "center" }, 0);
+
+      tl.to("#curve-classic", { strokeDashoffset: 0, duration: 1.7, ease: "power2.inOut" }, 5.3);
+      tl.from("#label-classic", { opacity: 0, duration: 0.5 }, 6.9);
+
+      tl.to("#curve-dl", { strokeDashoffset: 0, duration: 2.1, ease: "power2.inOut" }, 7.3);
+      tl.from("#label-dl", { opacity: 0, duration: 0.5 }, 9.1);
+
+      tl.from("#r1", { opacity: 0, x: 40, duration: 0.55, ease: "power2.out" }, 9.8);
+      tl.from("#r2", { opacity: 0, x: 40, duration: 0.55, ease: "power2.out" }, 11.6);
+      tl.from("#r3", { opacity: 0, x: 40, duration: 0.55, ease: "power2.out" }, 13.4);
+
+      tl.to("#curve-classic", { opacity: 0.45, duration: 0.7, ease: "power1.inOut" }, 15.6);
+      tl.fromTo("#label-dl", { scale: 1 }, { scale: 1.12, duration: 0.7, yoyo: true, repeat: 2, ease: "sine.inOut", transformOrigin: "center", immediateRender: false }, 17.0);
+      tl.fromTo("#curve-dl", { opacity: 1 }, { opacity: 0.75, duration: 0.7, yoyo: true, repeat: 2, ease: "sine.inOut", immediateRender: false }, 17.0);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
