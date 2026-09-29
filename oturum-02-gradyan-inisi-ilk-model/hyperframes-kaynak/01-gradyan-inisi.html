@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1280, height=720" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0; width: 1280px; height: 720px; overflow: hidden;
+        background: #0b0f14; font-family: ui-sans-serif, system-ui, sans-serif;
+        color: #e6edf3;
+      }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; }
+      .clip { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+      .glow {
+        position: absolute; width: 620px; height: 620px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(45,212,191,0.08) 0%, rgba(45,212,191,0) 70%);
+        top: -180px; left: -160px;
+      }
+      .glow2 {
+        position: absolute; width: 500px; height: 500px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(251,191,36,0.06) 0%, rgba(251,191,36,0) 70%);
+        bottom: -160px; right: -140px;
+      }
+
+      #title-card .kicker {
+        font-size: 22px; letter-spacing: 0.28em;
+        text-transform: uppercase; color: #2dd4bf; font-weight: 600;
+      }
+      #title-card h1 {
+        margin-top: 18px; font-size: 64px; font-weight: 700; letter-spacing: -0.02em;
+        text-align: center; line-height: 1.15;
+      }
+      #title-card .sub { margin-top: 22px; font-size: 27px; color: #8b949e; }
+
+      .content { display: flex; align-items: center; gap: 40px; }
+      .chart-panel {
+        background: #151b23; border: 1px solid #2a3441; border-radius: 20px;
+        padding: 22px 22px 14px 22px;
+      }
+      .axis-label { font-size: 20px; fill: #8b949e; font-weight: 600; }
+      .curve { stroke: #4cc9b0; stroke-width: 7; fill: none; stroke-linecap: round; }
+      .clabel { font-size: 22px; font-weight: 700; }
+
+      .trials { display: flex; flex-direction: column; gap: 20px; width: 420px; }
+      .trial {
+        background: #151b23; border: 1px solid #2a3441; border-left: 5px solid #2dd4bf;
+        border-radius: 14px; padding: 16px 20px;
+      }
+      .trial .thead { display: flex; align-items: baseline; gap: 14px; }
+      .trial .lr { font-size: 24px; font-weight: 700; }
+      .trial .verdict { font-size: 18px; font-weight: 600; letter-spacing: 0.04em; }
+      .trial .tbody { font-size: 18px; color: #a3adba; margin-top: 6px; }
+      #trial-1 { border-left-color: #9aa4b2; }
+      #trial-1 .lr { color: #9aa4b2; }
+      #trial-2 { border-left-color: #2dd4bf; }
+      #trial-2 .lr { color: #2dd4bf; }
+      #trial-3 { border-left-color: #f87171; }
+      #trial-3 .lr { color: #f87171; }
+
+      .verdict {
+        max-width: 1120px; font-size: 28px; font-weight: 700; text-align: center; color: #e6edf3;
+        line-height: 1.5;
+      }
+      .verdict .gray { color: #9aa4b2; }
+      .verdict .hl { color: #2dd4bf; }
+      .verdict .bad { color: #f87171; }
+      .verdict .amber { color: #fbbf24; }
+      .verdict .vrow { margin-top: 14px; font-size: 24px; font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1280" data-height="720" data-duration="23">
+      <div class="glow" data-layout-ignore></div>
+      <div class="glow2" data-layout-ignore></div>
+
+      <section id="title-card" class="clip" data-start="0" data-duration="4.2" data-track-index="0">
+        <div class="kicker">Oturum 2 · Temeller</div>
+        <h1>Gradyan İnişi</h1>
+        <div class="sub">Tepeden vadiye — adım adım inmek</div>
+      </section>
+
+      <section id="chart-card" class="clip" data-start="4.2" data-duration="15.4" data-track-index="1">
+        <div class="content">
+          <div class="chart-panel">
+            <svg id="chart" width="660" height="440" viewBox="0 0 660 440">
+              <line x1="50" y1="410" x2="640" y2="410" stroke="#2a3441" stroke-width="3" id="axis-x"></line>
+              <line x1="50" y1="410" x2="50" y2="20" stroke="#2a3441" stroke-width="3" id="axis-y"></line>
+              <text class="axis-label" x="345" y="434" text-anchor="middle">ağırlık w →</text>
+              <text class="axis-label" x="18" y="215" text-anchor="middle" writing-mode="tb" glyph-orientation-vertical="0">maliyet →</text>
+              <path id="ucurve" class="curve" pathLength="1"
+                d="M 80 81 Q 350 679 620 81"></path>
+              <text id="wlabel" class="clabel" fill="#fbbf24" x="350" y="330" text-anchor="middle">en düşük maliyet</text>
+              <circle id="min-dot" cx="350" cy="380" r="7" fill="#fbbf24"></circle>
+              <circle id="ball1" cx="0" cy="0" r="13" fill="#9aa4b2" stroke="#0b0f14" stroke-width="3"></circle>
+              <circle id="ball2" cx="0" cy="0" r="13" fill="#2dd4bf" stroke="#0b0f14" stroke-width="3"></circle>
+              <circle id="ball3" cx="0" cy="0" r="13" fill="#f87171" stroke="#0b0f14" stroke-width="3"></circle>
+            </svg>
+          </div>
+          <div class="trials">
+            <div class="trial" id="trial-1">
+              <div class="thead"><span class="lr">lr = 0.001</span><span class="verdict" style="color:#9aa4b2">çok yavaş</span></div>
+              <div class="tbody">Küçük adımlar: iniş güvenli ama dakikalar sürer</div>
+            </div>
+            <div class="trial" id="trial-2">
+              <div class="thead"><span class="lr">lr = 0.1</span><span class="verdict" style="color:#2dd4bf">tam ayarında</span></div>
+              <div class="tbody">Büyük ve dengeli adımlar: hızla vadiye ulaşır</div>
+            </div>
+            <div class="trial" id="trial-3">
+              <div class="thead"><span class="lr">lr = 1.0</span><span class="verdict" style="color:#f87171">zıplıyor</span></div>
+              <div class="tbody">Çok büyük adımlar: minimumun üzerinden atlar</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="verdict-card" class="clip" data-start="19.6" data-duration="3.4" data-track-index="2">
+        <div class="verdict" id="verdict-line">
+          <div>Gradyan inişi: eğimi takip et, <span class="amber">lr adımıyla</span> in.</div>
+          <div class="vrow"><span class="gray">çok küçük lr = yavaş</span> · <span class="hl">uygun lr = hızlı iniş</span> · <span class="bad">çok büyük lr = zıplama</span></div>
+        </div>
+      </section>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from("#title-card .kicker", { opacity: 0, y: -14, duration: 0.5, ease: "power2.out" }, 0.2);
+      tl.from("#title-card h1", { opacity: 0, y: 26, duration: 0.7, ease: "power3.out" }, 0.5);
+      tl.from("#title-card .sub", { opacity: 0, y: 16, duration: 0.5, ease: "power2.out" }, 1.2);
+
+      tl.from("#chart-card .content", { opacity: 0, duration: 0.45 }, 4.4);
+      tl.from("#axis-x", { attr: { x2: 50 }, duration: 0.8, ease: "power2.inOut" }, 4.6);
+      tl.from("#axis-y", { attr: { y2: 410 }, duration: 0.8, ease: "power2.inOut" }, 4.6);
+      tl.from("#chart .axis-label", { opacity: 0, duration: 0.5 }, 5.2);
+
+      tl.set("#ucurve", { strokeDasharray: 1, strokeDashoffset: 1, opacity: 1 }, 0);
+      tl.to("#ucurve", { strokeDashoffset: 0, duration: 1.8, ease: "power2.inOut" }, 5.1);
+      tl.from("#wlabel", { opacity: 0, duration: 0.5 }, 6.2);
+      tl.from("#min-dot", { opacity: 0, scale: 0, transformOrigin: "center", duration: 0.5, ease: "back.out(2)" }, 6.3);
+
+      // U eğrisi: y(x) = 380 - 0.0041*(x-350)^2  (ekran koordinatları, y aşağı büyür)
+      const WSTAR = 350;
+      const Y = (x) => 380 - 0.0041 * (x - WSTAR) * (x - WSTAR);
+      // k = adım oranı: x(n+1) = x(n) + k*(w* - x(n))
+      function seq(x0, k, n) {
+        const pts = [x0];
+        let x = x0;
+        for (let i = 0; i < n; i++) { x = x + k * (WSTAR - x); pts.push(x); }
+        return pts;
+      }
+      function hops(sel, pts, t0, hopDur) {
+        for (let i = 0; i < pts.length - 1; i++) {
+          tl.fromTo(sel,
+            { x: pts[i], y: Y(pts[i]) },
+            { x: pts[i + 1], y: Y(pts[i + 1]), duration: hopDur, ease: "power1.out" },
+            t0 + i * hopDur);
+        }
+      }
+
+      // Deneme 1: çok küçük lr — yavaş sürünme (10 küçük adım)
+      tl.from("#trial-1", { opacity: 0, x: 40, duration: 0.5, ease: "power2.out" }, 6.6);
+      tl.fromTo("#ball1", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 6.8);
+      tl.set("#ball1", { x: 110, y: Y(110) }, 0);
+      hops("#ball1", seq(110, 0.05, 10), 7.1, 0.32);
+      tl.fromTo("#trial-1 .tbody", { opacity: 1 }, { opacity: 0.55, duration: 0.4 }, 10.3);
+      tl.to("#ball1", { opacity: 0.3, duration: 0.4 }, 10.4);
+
+      // Deneme 2: uygun lr — hızlı yakınsama (6 adım)
+      tl.from("#trial-2", { opacity: 0, x: 40, duration: 0.5, ease: "power2.out" }, 10.7);
+      tl.fromTo("#ball2", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 10.9);
+      tl.set("#ball2", { x: 110, y: Y(110) }, 0);
+      hops("#ball2", seq(110, 0.42, 6), 11.2, 0.36);
+      tl.fromTo("#trial-2 .tbody", { opacity: 1 }, { opacity: 0.55, duration: 0.4 }, 13.3);
+      tl.to("#trial-1", { opacity: 0.4, duration: 0.4 }, 10.7);
+
+      // Deneme 3: çok büyük lr — minimumun üzerinden zıplama (10 salınım)
+      tl.from("#trial-3", { opacity: 0, x: 40, duration: 0.5, ease: "power2.out" }, 13.4);
+      tl.fromTo("#ball3", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 13.6);
+      tl.set("#ball3", { x: 110, y: Y(110) }, 0);
+      hops("#ball3", seq(110, 1.6, 10), 13.9, 0.3);
+      tl.to("#trial-2", { opacity: 0.4, duration: 0.4 }, 13.5);
+      tl.to("#trial-1", { opacity: 0.22, duration: 0.4 }, 13.5);
+
+      // Kapanış vurgusu: minimum nabazanı, uygun top parlar
+      tl.fromTo("#min-dot", { scale: 1 }, { scale: 2.1, duration: 0.45, yoyo: true, repeat: 3, ease: "sine.inOut", transformOrigin: "center", immediateRender: false }, 17.0);
+      tl.fromTo("#ball2", { opacity: 1 }, { opacity: 0.45, duration: 0.45, yoyo: true, repeat: 3, ease: "sine.inOut", immediateRender: false }, 17.0);
+      tl.fromTo("#trial-2", { opacity: 0.4 }, { opacity: 1, duration: 0.5, immediateRender: false }, 17.2);
+      tl.to("#trial-1", { opacity: 0.3, duration: 0.4, immediateRender: false }, 17.2);
+      tl.to("#trial-3", { opacity: 0.4, duration: 0.4 }, 17.2);
+
+      tl.from("#verdict-line", { opacity: 0, y: 24, duration: 0.6, ease: "power3.out" }, 19.9);
+      tl.fromTo("#verdict-line", { scale: 1 }, { scale: 1.03, duration: 0.8, yoyo: true, repeat: 1, ease: "sine.inOut" }, 21.2);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

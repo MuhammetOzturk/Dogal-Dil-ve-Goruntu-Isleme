@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1280, height=720" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0; width: 1280px; height: 720px; overflow: hidden;
+        background: #0b0f14; font-family: ui-sans-serif, system-ui, sans-serif;
+        color: #e6edf3;
+      }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; }
+      .clip { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+      .glow {
+        position: absolute; width: 620px; height: 620px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(45,212,191,0.08) 0%, rgba(45,212,191,0) 70%);
+        top: -180px; right: -160px;
+      }
+      .glow2 {
+        position: absolute; width: 500px; height: 500px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(251,191,36,0.06) 0%, rgba(251,191,36,0) 70%);
+        bottom: -160px; left: -140px;
+      }
+
+      #title-card .kicker {
+        font-size: 22px; letter-spacing: 0.28em;
+        text-transform: uppercase; color: #2dd4bf; font-weight: 600;
+      }
+      #title-card h1 {
+        margin-top: 18px; font-size: 64px; font-weight: 700; letter-spacing: -0.02em;
+        text-align: center; line-height: 1.15;
+      }
+      #title-card .sub { margin-top: 22px; font-size: 27px; color: #8b949e; }
+
+      .flow { display: flex; flex-direction: column; align-items: center; gap: 26px; }
+
+      .panel {
+        background: #151b23; border: 1px solid #2a3441; border-radius: 16px;
+        padding: 14px 24px;
+      }
+      .panel-title { font-size: 18px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8b949e; margin-bottom: 10px; text-align: center; }
+      .panel-title .hl { color: #2dd4bf; }
+
+      .cells { display: flex; gap: 10px; }
+      .cell {
+        width: 44px; height: 44px; border-radius: 10px;
+        background: #10201d; border: 1px solid #2dd4bf; color: #2dd4bf;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 18px; font-weight: 700;
+      }
+      .batches { display: flex; gap: 22px; }
+      .batch {
+        background: #151b23; border: 1px solid #2a3441; border-left: 5px solid #fbbf24;
+        border-radius: 14px; padding: 12px 18px; text-align: center;
+      }
+      .batch .btitle { font-size: 18px; font-weight: 700; color: #fbbf24; margin-bottom: 10px; }
+      .batch .cells .cell { width: 38px; height: 38px; font-size: 15px; }
+
+      .epochs { display: flex; align-items: center; gap: 18px; }
+      .epoch {
+        background: #151b23; border: 1px solid #2a3441; border-radius: 999px;
+        padding: 10px 22px; text-align: center; position: relative; overflow: hidden;
+      }
+      .epoch .etitle { font-size: 19px; font-weight: 700; position: relative; z-index: 1; }
+      .epoch .bar {
+        position: absolute; left: 0; top: 0; bottom: 0; width: 100%;
+        background: rgba(45,212,191,0.22); transform: scaleX(0); transform-origin: left;
+      }
+      .epoch-arrow { font-size: 26px; color: #4b5563; font-weight: 700; }
+      .loop-label { font-size: 19px; color: #8b949e; font-weight: 600; }
+
+      .lr-panel { width: 760px; }
+      .lr-track { position: relative; height: 14px; border-radius: 999px; background: #2a3441; }
+      .lr-fill {
+        position: absolute; left: 0; top: 0; bottom: 0; width: 100%;
+        background: linear-gradient(90deg, #2dd4bf, #fbbf24);
+        border-radius: 999px; transform: scaleX(0.1); transform-origin: left;
+      }
+      .lr-knob {
+        position: absolute; top: 50%; left: 10%; width: 26px; height: 26px; border-radius: 50%;
+        background: #fbbf24; border: 3px solid #0b0f14;
+        margin-left: -13px; margin-top: -13px;
+      }
+      .lr-marks { display: flex; justify-content: space-between; margin-top: 10px; font-size: 17px; color: #8b949e; font-weight: 600; }
+      .lr-marks .mk { width: 33%; text-align: center; }
+
+      .verdict {
+        max-width: 1120px; font-size: 28px; font-weight: 700; text-align: center; color: #e6edf3;
+        line-height: 1.5;
+      }
+      .verdict .hl { color: #2dd4bf; }
+      .verdict .amber { color: #fbbf24; }
+      .verdict .vrow { margin-top: 14px; font-size: 24px; font-weight: 600; }
+      .verdict .vrow .hl { color: #2dd4bf; }
+      .verdict .vrow .amber { color: #fbbf24; }
+      .verdict .vrow .plain { color: #8b949e; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1280" data-height="720" data-duration="22">
+      <div class="glow" data-layout-ignore></div>
+      <div class="glow2" data-layout-ignore></div>
+
+      <section id="title-card" class="clip" data-start="0" data-duration="4" data-track-index="0">
+        <div class="kicker">Oturum 2 · Temeller</div>
+        <h1>Batch, Epoch ve lr</h1>
+        <div class="sub">Eğitim döngüsünün ritmi</div>
+      </section>
+
+      <section id="flow-card" class="clip" data-start="4" data-duration="13.6" data-track-index="1">
+        <div class="flow">
+          <div class="panel" id="data-panel">
+            <div class="panel-title">Eğitim verisi · <span class="hl">12 örnek</span></div>
+            <div class="cells" id="data-cells"></div>
+          </div>
+
+          <div class="batches" id="batches"></div>
+
+          <div class="epochs">
+            <div class="epoch" id="ep1"><div class="bar"></div><div class="etitle">Epoch 1</div></div>
+            <div class="epoch" id="ep2"><div class="bar"></div><div class="etitle">Epoch 2</div></div>
+            <div class="epoch" id="ep3"><div class="bar"></div><div class="etitle">Epoch 3</div></div>
+          </div>
+          <div class="loop-label" id="loop-label">Tüm verinin bir tam geçişi = 1 epoch</div>
+
+          <div class="panel lr-panel" id="lr-panel">
+            <div class="panel-title">Öğrenme hızı (lr) · adımın boyu</div>
+            <div class="lr-track">
+              <div class="lr-fill" id="lr-fill"></div>
+              <div class="lr-knob" id="lr-knob"></div>
+            </div>
+            <div class="lr-marks">
+              <div class="mk">0.001 · yavaş</div>
+              <div class="mk">0.1 · uygun</div>
+              <div class="mk">1.0 · zıplar</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="verdict-card" class="clip" data-start="17.6" data-duration="4.4" data-track-index="2">
+        <div class="verdict" id="verdict-line">
+          <div>Mini-batch: her adımda <span class="amber">küçük bir grup</span> · lr: <span class="amber">adımın boyu</span></div>
+          <div class="vrow"><span class="plain">1 tam geçiş =</span> 1 <span class="hl">epoch</span> · 3 epoch = veriyi 3 kez gör</div>
+        </div>
+      </section>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+
+      // 12 örnek hücresi ve 3 mini-batch panelini kur
+      const dataWrap = document.getElementById("data-cells");
+      for (let i = 1; i <= 12; i++) {
+        const d = document.createElement("div");
+        d.className = "cell";
+        d.textContent = String(i);
+        dataWrap.appendChild(d);
+      }
+      const batchWrap = document.getElementById("batches");
+      const batchCells = [];
+      for (let b = 0; b < 3; b++) {
+        const box = document.createElement("div");
+        box.className = "batch";
+        box.id = "batch-" + (b + 1);
+        const t = document.createElement("div");
+        t.className = "btitle";
+        t.textContent = "Mini-batch " + (b + 1) + " · 4 örnek";
+        box.appendChild(t);
+        const cells = document.createElement("div");
+        cells.className = "cells";
+        const list = [];
+        for (let c = 0; c < 4; c++) {
+          const d = document.createElement("div");
+          d.className = "cell";
+          d.textContent = String(b * 4 + c + 1);
+          cells.appendChild(d);
+          list.push(d);
+        }
+        box.appendChild(cells);
+        batchWrap.appendChild(box);
+        batchCells.push(list);
+      }
+
+      tl.from("#title-card .kicker", { opacity: 0, y: -14, duration: 0.5, ease: "power2.out" }, 0.2);
+      tl.from("#title-card h1", { opacity: 0, y: 26, duration: 0.7, ease: "power3.out" }, 0.5);
+      tl.from("#title-card .sub", { opacity: 0, y: 16, duration: 0.5, ease: "power2.out" }, 1.2);
+
+      tl.from("#flow-card .flow", { opacity: 0, duration: 0.45 }, 4.2);
+      tl.from("#data-panel", { opacity: 0, y: 24, duration: 0.5, ease: "power2.out" }, 4.5);
+      tl.from("#data-cells .cell", { opacity: 0, scale: 0.4, duration: 0.35, stagger: 0.06, ease: "back.out(1.7)" }, 4.8);
+
+      tl.from("#batches .batch", { opacity: 0, y: 26, duration: 0.5, stagger: 0.45, ease: "power2.out" }, 6.2);
+      for (let b = 0; b < 3; b++) {
+        tl.from(batchCells[b], { opacity: 0, scale: 0.5, duration: 0.3, stagger: 0.09, ease: "back.out(1.7)" }, 6.5 + b * 0.45);
+      }
+      tl.fromTo("#batches", { y: 0 }, { y: -4, duration: 0.4, yoyo: true, repeat: 1, ease: "sine.inOut" }, 8.2);
+
+      tl.from("#ep1", { opacity: 0, y: 18, duration: 0.45, ease: "power2.out" }, 8.8);
+      tl.fromTo("#ep1 .bar", { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: "power1.inOut" }, 9.2);
+      tl.from("#ep2", { opacity: 0, y: 18, duration: 0.45, ease: "power2.out" }, 9.9);
+      tl.fromTo("#ep2 .bar", { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: "power1.inOut" }, 10.3);
+      tl.from("#ep3", { opacity: 0, y: 18, duration: 0.45, ease: "power2.out" }, 11.0);
+      tl.fromTo("#ep3 .bar", { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: "power1.inOut" }, 11.4);
+      tl.from("#loop-label", { opacity: 0, duration: 0.5 }, 12.1);
+
+      tl.from("#lr-panel", { opacity: 0, y: 22, duration: 0.5, ease: "power2.out" }, 12.9);
+      tl.fromTo("#lr-knob", { x: 0 }, { x: 304, duration: 0.9, ease: "power2.inOut", immediateRender: false }, 13.6);
+      tl.fromTo("#lr-fill", { scaleX: 0.1 }, { scaleX: 0.5, duration: 0.9, ease: "power2.inOut", immediateRender: false }, 13.6);
+
+      tl.fromTo("#lr-knob", { scale: 1 }, { scale: 1.3, duration: 0.5, yoyo: true, repeat: 3, ease: "sine.inOut", immediateRender: false }, 14.8);
+      tl.fromTo("#ep1 .etitle, #ep2 .etitle, #ep3 .etitle", { opacity: 1 }, { opacity: 0.6, duration: 0.6, yoyo: true, repeat: 1, ease: "sine.inOut", immediateRender: false }, 15.4);
+
+      tl.from("#verdict-line", { opacity: 0, y: 24, duration: 0.6, ease: "power3.out" }, 18.1);
+      tl.fromTo("#verdict-line", { scale: 1 }, { scale: 1.03, duration: 0.8, yoyo: true, repeat: 1, ease: "sine.inOut" }, 19.5);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
