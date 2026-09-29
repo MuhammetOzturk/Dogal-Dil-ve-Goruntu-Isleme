@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1280, height=720" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0; width: 1280px; height: 720px; overflow: hidden;
+        background: #0b0f14; font-family: ui-sans-serif, system-ui, sans-serif;
+        color: #e6edf3;
+      }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; }
+      .clip { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+      .glow {
+        position: absolute; width: 620px; height: 620px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(45,212,191,0.08) 0%, rgba(45,212,191,0) 70%);
+        top: -180px; right: -160px;
+      }
+      .glow2 {
+        position: absolute; width: 500px; height: 500px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(251,191,36,0.06) 0%, rgba(251,191,36,0) 70%);
+        bottom: -160px; left: -140px;
+      }
+
+      #title-card .kicker {
+        font-size: 22px; letter-spacing: 0.28em;
+        text-transform: uppercase; color: #2dd4bf; font-weight: 600;
+      }
+      #title-card h1 {
+        margin-top: 18px; font-size: 62px; font-weight: 700; letter-spacing: -0.02em;
+        text-align: center; line-height: 1.15;
+      }
+      #title-card .sub { margin-top: 22px; font-size: 27px; color: #8b949e; }
+
+      .stage { display: flex; flex-direction: column; align-items: center; gap: 30px; }
+      .row { display: flex; align-items: flex-start; gap: 70px; }
+
+      .img-wrap { position: relative; width: 344px; padding-bottom: 58px; }
+      .img-grid {
+        position: relative; z-index: 2;
+        display: grid; grid-template-columns: repeat(8, 40px); grid-auto-rows: 40px; gap: 2px;
+        border: 1px solid #2a3441; padding: 4px; background: #0e141b;
+      }
+      .img-grid .px { width: 40px; height: 40px; border-radius: 3px; }
+
+      .ghost {
+        position: absolute; z-index: 1; width: 344px; height: 344px;
+        border-radius: 8px; border: 2px dashed #2a3441; background: #0d1319;
+      }
+      .g1 { top: 18px; left: 18px; }
+      .g2 { top: 36px; left: 36px; }
+      .g3 { top: 54px; left: 54px; }
+
+      .badge-slot { position: absolute; bottom: 0; left: -40px; right: -40px; height: 52px; }
+      .shape-badge {
+        position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+        font-size: 24px; font-weight: 700; color: #2dd4bf; letter-spacing: 0.02em;
+      }
+      .shape-badge.batch { color: #fbbf24; }
+
+      .val-panel {
+        position: relative; width: 396px;
+        background: #151b23; border: 1px solid #2a3441; border-radius: 16px;
+        padding: 18px 20px 20px;
+      }
+      .panel-title-row { display: flex; align-items: center; justify-content: space-between; height: 46px; }
+      .panel-title { font-size: 18px; font-weight: 600; color: #8b949e; letter-spacing: 0.04em; }
+      .panel-title .hl { color: #2dd4bf; }
+      .div-chip {
+        font-size: 17px; font-weight: 700; color: #fbbf24;
+        border: 1px solid #fbbf24; border-radius: 10px; padding: 5px 12px; background: #1d1a10;
+      }
+      .val-stack { position: relative; height: 334px; }
+      .val-grid {
+        position: absolute; inset: 0;
+        display: grid; grid-template-columns: repeat(8, 40px); grid-auto-rows: 40px; gap: 2px;
+      }
+      .val-grid .val {
+        display: flex; align-items: center; justify-content: center;
+        font-family: ui-monospace, monospace; font-size: 15px; font-weight: 600;
+        background: #10161d; border-radius: 4px; color: #cdd9e5;
+      }
+      #vals01 .val { color: #5eead4; }
+
+      .cap-zone { position: relative; width: 1100px; height: 46px; }
+      .cap {
+        position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+        font-size: 25px; font-weight: 600; color: #e6edf3; text-align: center;
+      }
+      .cap .teal { color: #2dd4bf; }
+      .cap .amber { color: #fbbf24; }
+
+      .verdict { max-width: 1100px; text-align: center; font-size: 40px; font-weight: 700; }
+      .verdict .hl { color: #2dd4bf; }
+      .verdict-sub { margin-top: 20px; font-size: 25px; font-weight: 500; color: #8b949e; }
+      .verdict-sub .amber { color: #fbbf24; font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1280" data-height="720" data-duration="21">
+      <div class="glow" data-layout-ignore></div>
+      <div class="glow2" data-layout-ignore></div>
+
+      <section id="title-card" class="clip" data-start="0" data-duration="4.2" data-track-index="0">
+        <div class="kicker">Ders 3 · Görüntü Verisi ve Ön İşleme</div>
+        <h1>Piksel → Tensor Yolculuğu</h1>
+        <div class="sub">Bir görüntü, modelin diline nasıl çevrilir?</div>
+      </section>
+
+      <section id="journey-card" class="clip" data-start="4.2" data-duration="12.7" data-track-index="1">
+        <div class="stage">
+          <div class="row">
+            <div class="img-wrap" id="img-wrap">
+              <div class="ghost g1" data-ghost></div>
+              <div class="ghost g2" data-ghost></div>
+              <div class="ghost g3" data-ghost></div>
+              <div class="img-grid" id="img-grid"></div>
+              <div class="badge-slot">
+                <div class="shape-badge" id="badge-hwc">shape = [8, 8, 3]</div>
+                <div class="shape-badge batch" id="badge-batch">[4, 8, 8, 3]</div>
+              </div>
+            </div>
+            <div class="val-panel" id="val-panel">
+              <div class="panel-title-row">
+                <div class="panel-title" id="pt255">piksel değerleri (0–255)</div>
+                <div class="panel-title" id="pt01">normalize: <span class="hl">(0–1)</span></div>
+                <div class="div-chip" id="div255">÷ 255</div>
+              </div>
+              <div class="val-stack">
+                <div class="val-grid" id="vals255"></div>
+                <div class="val-grid" id="vals01"></div>
+              </div>
+            </div>
+          </div>
+          <div class="cap-zone">
+            <div class="cap" id="cap1"><span>Her kare bir piksel: <span class="teal">0–255</span> aralığında parlaklık</span></div>
+            <div class="cap" id="cap2"><span>Normalize: tüm değerler <span class="teal">0–1</span> aralığına çekilir</span></div>
+            <div class="cap" id="cap3"><span>Şekil: <span class="teal">[yükseklik, genişlik, kanal]</span> = [8, 8, 3]</span></div>
+            <div class="cap" id="cap4"><span>Mini-batch: 4 görüntü birlikte = <span class="amber">[4, 8, 8, 3]</span></span></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="verdict-card" class="clip" data-start="16.9" data-duration="4.1" data-track-index="2">
+        <div class="verdict" id="verdict-line">
+          Görüntü = <span class="hl">[H, W, 3]</span> · Batch = <span class="hl">[B, H, W, 3]</span>
+          <div class="verdict-sub">PyTorch modeli <span class="amber">[C, H, W]</span> düzeni ister — permute ile çevrilir</div>
+        </div>
+      </section>
+    </div>
+    <script>
+      const N = 8;
+      const imgGrid = document.getElementById("img-grid");
+      const vals255 = document.getElementById("vals255");
+      const vals01 = document.getElementById("vals01");
+      const lo = [23, 88, 82];
+      const hi = [251, 191, 36];
+      const lerp = (a, b, t) => Math.round(a + (b - a) * t);
+      for (let i = 0; i < N; i++) {
+        for (let j = 0; j < N; j++) {
+          const t = (i + j) / (2 * N - 2);
+          const cell = document.createElement("div");
+          cell.className = "px";
+          cell.style.background =
+            "rgb(" + lerp(lo[0], hi[0], t) + "," + lerp(lo[1], hi[1], t) + "," + lerp(lo[2], hi[2], t) + ")";
+          imgGrid.appendChild(cell);
+          const a = document.createElement("div");
+          a.className = "val";
+          a.textContent = String(Math.round(255 * t));
+          vals255.appendChild(a);
+          const b = document.createElement("div");
+          b.className = "val";
+          b.textContent = t.toFixed(2);
+          vals01.appendChild(b);
+        }
+      }
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from("#title-card .kicker", { opacity: 0, y: -14, duration: 0.5, ease: "power2.out" }, 0.2);
+      tl.from("#title-card h1", { opacity: 0, y: 26, duration: 0.7, ease: "power3.out" }, 0.5);
+      tl.from("#title-card .sub", { opacity: 0, y: 16, duration: 0.5, ease: "power2.out" }, 1.2);
+
+      tl.from("#journey-card .stage", { opacity: 0, duration: 0.4 }, 4.35);
+      tl.from("#img-grid .px", { opacity: 0, scale: 0.6, duration: 0.3, stagger: { each: 0.012, from: "start" }, ease: "power1.out" }, 4.55);
+      tl.from("#val-panel", { opacity: 0, x: 34, duration: 0.5, ease: "power2.out" }, 5.35);
+      tl.from("#pt255", { opacity: 0, y: -8, duration: 0.4, ease: "power2.out" }, 5.55);
+      tl.from("#vals255 .val", { opacity: 0, duration: 0.22, stagger: { each: 0.008, from: "start" }, ease: "power1.out" }, 5.75);
+      tl.from("#cap1", { opacity: 0, y: 14, duration: 0.5, ease: "power2.out" }, 6.3);
+
+      tl.to("#cap1", { opacity: 0, y: -10, duration: 0.4, ease: "power1.in" }, 8.3);
+      tl.from("#div255", { opacity: 0, scale: 0.5, duration: 0.4, ease: "back.out(2)" }, 8.6);
+      tl.to("#vals255", { opacity: 0, duration: 0.4, ease: "power1.inOut" }, 8.95);
+      tl.from("#vals01 .val", { opacity: 0, duration: 0.18, stagger: { each: 0.006, from: "start" }, ease: "power1.out" }, 9.15);
+      tl.from("#pt01", { opacity: 0, y: -8, duration: 0.4, ease: "power2.out" }, 9.5);
+      tl.from("#cap2", { opacity: 0, y: 14, duration: 0.5, ease: "power2.out" }, 9.9);
+
+      tl.to("#cap2", { opacity: 0, y: -10, duration: 0.4, ease: "power1.in" }, 12.1);
+      tl.from("#badge-hwc", { opacity: 0, y: 12, duration: 0.5, ease: "back.out(1.7)" }, 12.4);
+      tl.from("#cap3", { opacity: 0, y: 14, duration: 0.5, ease: "power2.out" }, 12.7);
+      tl.fromTo("#badge-hwc", { scale: 1 }, { scale: 1.07, duration: 0.7, yoyo: true, repeat: 1, ease: "sine.inOut" }, 13.9);
+
+      tl.to("#cap3", { opacity: 0, y: -10, duration: 0.4, ease: "power1.in" }, 14.7);
+      tl.to("#badge-hwc", { opacity: 0, duration: 0.3, ease: "power1.in" }, 14.8);
+      tl.fromTo("[data-ghost]", { opacity: 0, scale: 0.88 }, { opacity: 0.3, scale: 1, duration: 0.45, stagger: 0.14, ease: "power2.out" }, 15.0);
+      tl.from("#badge-batch", { opacity: 0, scale: 0.75, duration: 0.45, ease: "back.out(2)" }, 15.3);
+      tl.from("#cap4", { opacity: 0, y: 14, duration: 0.5, ease: "power2.out" }, 15.6);
+      tl.fromTo("#badge-batch", { scale: 1 }, { scale: 1.06, duration: 0.45, yoyo: true, repeat: 1, ease: "sine.inOut" }, 16.15);
+
+      tl.from("#verdict-line", { opacity: 0, y: 24, duration: 0.6, ease: "power3.out" }, 17.25);
+      tl.from("#verdict-card .verdict-sub", { opacity: 0, y: 14, duration: 0.5, ease: "power2.out" }, 17.95);
+      tl.fromTo("#verdict-line", { scale: 1 }, { scale: 1.035, duration: 0.8, yoyo: true, repeat: 1, ease: "sine.inOut" }, 18.9);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
